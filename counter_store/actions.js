@@ -10,10 +10,16 @@ const setRange = async (from) => {
 };
 
 const getRange = async () => {
-	const data = await store.read();
+	let data = await store.read();
+	if (!data) {
+		data = {
+			from: 0,
+			to: range,
+		};
+	}
 	return {
 		from: data.from,
-		to: data.from + range,
+		to: data.to,
 	};
 };
 
