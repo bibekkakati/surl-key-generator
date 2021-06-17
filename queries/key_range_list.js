@@ -1,7 +1,7 @@
 const request = require("../config/request");
 const DB_CONFIG = require("../config/database");
 
-const DB_NAME = "surls";
+const DB_NAME = process.env.DB_NAME;
 const KEY_RANGE_TABLE = "key_range_list";
 
 const COL_RANGE = "range";
@@ -21,12 +21,14 @@ const createTable = async () => {
 		const response = await request(config);
 		const { message, error } = response.data;
 		if (error) {
-			console.log("CREATE TABLE ERROR: " + error);
+			throw new Error(error);
 		} else {
 			console.log("CREATE TABLE INFO: " + message);
 		}
 	} catch (error) {
 		console.log("CATCH CREATE TABLE ERROR: " + error.message);
+		console.log("Check if table already exists");
+		process.exit(1);
 	}
 };
 

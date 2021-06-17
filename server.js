@@ -1,8 +1,7 @@
 require("dotenv").config();
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
-const { setRange } = require("./counter_store/actions");
-const { createTable } = require("./db/query");
+const { createTable } = require("./queries/key_range_list");
 const packageDefinition = protoLoader.loadSync("proto/key.proto", {});
 const grpcObject = grpc.loadPackageDefinition(packageDefinition);
 const KeyPackage = grpcObject.KeyPackage;
@@ -17,11 +16,11 @@ server.addService(KeyPackage.Key.service, {
 server.bindAsync(
 	"0.0.0.0:" + PORT,
 	grpc.ServerCredentials.createInsecure(),
-	(err, port) => {
+	async (err, port) => {
 		if (!err) {
+			await createTable();
 			server.start();
 			console.log("Server is running at ", port);
-			createTable();
 		} else {
 			console.error("Couldn't run server ", err);
 		}
@@ -31,7 +30,7 @@ server.bindAsync(
 handleExit = async (signal) => {
 	console.log(`Received ${signal}. Closing server gracefully.`);
 	server.tryShutdown((err) => {
-		process.exit(0);
+		process.exit(1);
 	});
 };
 process.on("SIGINT", handleExit);
