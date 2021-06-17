@@ -1,5 +1,5 @@
 const { getRange, setRange } = require("../counter_store/actions");
-const { insertServerInfo } = require("../db/query");
+const { insertServerInfo } = require("../queries/key_range_list");
 const getBase62 = require("./getBase62");
 
 const generateKeys = async (serverId) => {

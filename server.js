@@ -29,7 +29,7 @@ server.bindAsync(
 );
 
 handleExit = async (signal) => {
-	console.log(`Received ${signal}. Close server properly.`);
+	console.log(`Received ${signal}. Closing server gracefully.`);
 	server.tryShutdown((err) => {
 		process.exit(0);
 	});

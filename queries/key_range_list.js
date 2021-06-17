@@ -2,18 +2,17 @@ const request = require("../config/request");
 const DB_CONFIG = require("../config/database");
 
 const DB_NAME = "surls";
-const KEY_GEN_TABLE = "key_gen_table";
+const KEY_RANGE_TABLE = "key_range_list";
 
-const COL_FROM = "from";
-const COL_TO = "to";
+const COL_RANGE = "range";
 const COL_SERVER_ID = "serverId";
 
 const createTable = async () => {
 	const data = JSON.stringify({
 		operation: "create_table",
 		schema: DB_NAME,
-		table: KEY_GEN_TABLE,
-		hash_attribute: "from",
+		table: KEY_RANGE_TABLE,
+		hash_attribute: "id",
 	});
 
 	const config = { ...DB_CONFIG, data };
@@ -35,14 +34,14 @@ const insertServerInfo = async (from, to, serverId) => {
 	if (from < 0 || to < 0 || !serverId) {
 		throw new Error("INSERT SERVER INFO QUERY: args missing");
 	}
+	const range = from + ":" + to;
 	const data = JSON.stringify({
 		operation: "insert",
 		schema: DB_NAME,
-		table: KEY_GEN_TABLE,
+		table: KEY_RANGE_TABLE,
 		records: [
 			{
-				[COL_FROM]: from,
-				[COL_TO]: to,
+				[COL_RANGE]: range,
 				[COL_SERVER_ID]: serverId,
 			},
 		],
